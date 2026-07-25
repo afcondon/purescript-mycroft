@@ -1,0 +1,10 @@
+workspace:
+  packageSet:
+    registry: 77.13.1
+  extraPackages:
+    baskerville-core:
+      path: ../purescript-jtms/core
+    baskerville-testkit:
+      path: ../purescript-jtms/testkit
+    baskerville-sudoku:
+      path: ../purescript-jtms/examples/sudoku

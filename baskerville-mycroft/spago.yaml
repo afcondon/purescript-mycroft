@@ -1,0 +1,28 @@
+package:
+  name: baskerville-mycroft
+  description: >
+    The SMT-backed oracle: Baskerville's ⊨ seam extended past enumerable
+    world spaces. The claim universe stays finite; the solver replaces
+    world enumeration; unsat cores answer "which observations force this
+    claim".
+  dependencies:
+    - aff
+    - arrays
+    - baskerville-core
+    - baskerville-testkit
+    - either
+    - exceptions
+    - foldable-traversable
+    - maybe
+    - mycroft
+    - ordered-collections
+    - prelude
+    - transformers
+  test:
+    main: Test.Bridge.Main
+    dependencies:
+      - assert
+      - baskerville-sudoku
+      - console
+      - effect
+      - strings

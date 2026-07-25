@@ -1,0 +1,27 @@
+package:
+  name: mycroft
+  description: >
+    A thin SMT solver wrapper in the style of Haskell's simple-smt:
+    s-expressions in, s-expressions out, a lockstep process session,
+    and a small SMTLib veneer — named assertions, models, unsat cores.
+  dependencies:
+    - aff
+    - arrays
+    - effect
+    - either
+    - exceptions
+    - foldable-traversable
+    - lists
+    - maybe
+    - ordered-collections
+    - prelude
+    - refs
+    - strings
+    - transformers
+    - tuples
+  test:
+    main: Test.Mycroft.Main
+    dependencies:
+      - assert
+      - console
+      - quickcheck
