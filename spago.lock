@@ -56,6 +56,27 @@
             "quickcheck"
           ]
         }
+      },
+      "mycroft-z3-wasm": {
+        "path": "z3-wasm",
+        "core": {
+          "dependencies": [
+            "aff",
+            "aff-promise",
+            "effect",
+            "maybe",
+            "mycroft",
+            "prelude"
+          ]
+        },
+        "test": {
+          "dependencies": [
+            "arrays",
+            "assert",
+            "console",
+            "ordered-collections"
+          ]
+        }
       }
     },
     "package_set": {
@@ -709,13 +730,13 @@
     },
     "extra_packages": {
       "baskerville-core": {
-        "path": "../purescript-jtms/core"
+        "path": "../purescript-baskerville/core"
       },
       "baskerville-sudoku": {
-        "path": "../purescript-jtms/examples/sudoku"
+        "path": "../purescript-baskerville/examples/sudoku"
       },
       "baskerville-testkit": {
-        "path": "../purescript-jtms/testkit"
+        "path": "../purescript-baskerville/testkit"
       }
     }
   },
@@ -739,6 +760,21 @@
         "tailrec",
         "transformers",
         "unsafe-coerce"
+      ]
+    },
+    "aff-promise": {
+      "type": "registry",
+      "version": "4.0.0",
+      "integrity": "sha256-Jgp3y+NWuuAmwz2V3LlWoX+AvxqfVglY77N5zTw8xnI=",
+      "dependencies": [
+        "aff",
+        "control",
+        "effect",
+        "either",
+        "exceptions",
+        "foreign",
+        "prelude",
+        "transformers"
       ]
     },
     "arraybuffer-types": {
@@ -780,7 +816,7 @@
     },
     "baskerville-core": {
       "type": "local",
-      "path": "../purescript-jtms/core",
+      "path": "../purescript-baskerville/core",
       "dependencies": [
         "arrays",
         "control",
@@ -793,7 +829,7 @@
     },
     "baskerville-sudoku": {
       "type": "local",
-      "path": "../purescript-jtms/examples/sudoku",
+      "path": "../purescript-baskerville/examples/sudoku",
       "dependencies": [
         "arrays",
         "baskerville-core",
@@ -812,7 +848,7 @@
     },
     "baskerville-testkit": {
       "type": "local",
-      "path": "../purescript-jtms/testkit",
+      "path": "../purescript-baskerville/testkit",
       "dependencies": [
         "arrays",
         "baskerville-core",

@@ -1,0 +1,20 @@
+package:
+  name: mycroft-z3-wasm
+  description: >
+    The WASM backend: the official z3-solver npm build (Z3 compiled to
+    WebAssembly) behind the same Solver interface — mycroft without a
+    native binary, in Node today and the browser tomorrow.
+  dependencies:
+    - aff
+    - aff-promise
+    - effect
+    - maybe
+    - mycroft
+    - prelude
+  test:
+    main: Test.Z3Wasm.Main
+    dependencies:
+      - arrays
+      - assert
+      - console
+      - ordered-collections

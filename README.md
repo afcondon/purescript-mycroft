@@ -24,8 +24,16 @@ bring him the facts and he pronounces.
     `declareFun`, `assert`/`assertNamed`, `checkSat`, `getModel`,
     `getUnsatCore`, `push`/`pop`/`inNewScope`, term builders, and a
     sum-of-ite cardinality helper (`countEq`).
+- **`mycroft-z3-wasm`** — the WASM backend: the official `z3-solver`
+  npm package (Z3 compiled to WebAssembly) behind the same `Solver`
+  interface, via `newSolverWith` and a persistent
+  `Z3_eval_smtlib2_string` context. No native binary; runs in Node
+  today, and in the browser on a cross-origin-isolated page (the
+  build uses pthreads, so `SharedArrayBuffer` needs COOP/COEP
+  headers). One shared worker pool per process; `shutdownZ3Wasm`
+  tears it down at the end.
 - **`baskerville-mycroft`** — the bridge to
-  [Baskerville](../purescript-jtms)'s oracle seam:
+  [Baskerville](../purescript-baskerville)'s oracle seam:
   `Baskerville.Oracle.Smt`. In Baskerville domains the claim universe
   stays finite even when the world space explodes; the solver replaces
   world *enumeration* while claim *iteration* survives. The
@@ -51,9 +59,11 @@ main = launchAff_ do
 ```bash
 spago test -p mycroft              # golden + property + z3 integration
 spago test -p baskerville-mycroft  # the agreement law
+spago test -p mycroft-z3-wasm      # same beats, no z3 binary (WASM)
 ```
 
-Needs `z3` on `PATH`. The trust story for the bridge is a
+The first two need `z3` on `PATH`; the WASM suite needs only
+`npm install`. The trust story for the bridge is a
 differential law: on fixtures small enough to enumerate (the Sudoku
 chain puzzle), the SMT oracle and Baskerville's counting oracle must
 agree on `entailed` and `gap`, claim for claim — all 1458 of them.
@@ -62,4 +72,4 @@ agree on `entailed` and `gap`, claim for claim — all 1458 of them.
 
 The full design record — layer stack, the Cluedo demo plan, phases,
 non-goals — lives in the Baskerville repo at
-[`docs/smt-oracle-design.md`](../purescript-jtms/docs/smt-oracle-design.md).
+[`docs/smt-oracle-design.md`](../purescript-baskerville/docs/smt-oracle-design.md).

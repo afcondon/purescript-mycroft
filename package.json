@@ -1,5 +1,8 @@
 {
   "name": "purescript-mycroft",
   "private": true,
-  "type": "module"
+  "type": "module",
+  "dependencies": {
+    "z3-solver": "^5.0.0"
+  }
 }

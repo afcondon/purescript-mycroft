@@ -1,12 +1,20 @@
--- | The session layer: a solver subprocess kept in lockstep. The
--- | simple-smt trick — set `:print-success` immediately, so every
--- | command produces exactly one response s-expression and framing is
--- | trivial: write one form, read one form.
+-- | The session layer: a solver kept in lockstep. The simple-smt trick
+-- | — set `:print-success` immediately, so every command produces
+-- | exactly one response s-expression and framing is trivial: write one
+-- | form, read one form.
+-- |
+-- | The transport is abstracted: `newSolver` speaks to a subprocess
+-- | (`z3 -in -smt2` by default); other backends (the WASM build, a
+-- | remote solver) supply their own `Transport` via `newSolverWith`
+-- | and inherit the whole veneer above this module unchanged.
 module Mycroft.Solver
   ( Solver
   , SolverConfig
+  , Callbacks
+  , Transport
   , z3Config
   , newSolver
+  , newSolverWith
   , command
   , ackCommand
   , simpleCommand
@@ -40,6 +48,20 @@ foreign import writeImpl :: EffectFn2 SolverHandle String Unit
 
 foreign import killImpl :: EffectFn1 SolverHandle Unit
 
+-- | What a backend receives: where to deliver solver output (chunked,
+-- | any framing) and where to report a dead backend.
+type Callbacks =
+  { onChunk :: String -> Effect Unit
+  , onFailure :: String -> Effect Unit
+  }
+
+-- | What a backend provides: write one line of SMTLib2, and tear the
+-- | backend down (called at most once, by `stop`).
+type Transport =
+  { send :: String -> Effect Unit
+  , close :: Effect Unit
+  }
+
 type SolverConfig =
   { cmd :: String
   , args :: Array String
@@ -50,7 +72,7 @@ z3Config :: SolverConfig
 z3Config = { cmd: "z3", args: [ "-in", "-smt2" ], log: Nothing }
 
 newtype Solver = Solver
-  { handle :: SolverHandle
+  { transport :: Transport
   , parse :: Ref SExpr.ParseState
   , ready :: Ref (Array SExpr)
   , waiter :: Ref (Maybe (Either Error SExpr -> Effect Unit))
@@ -58,42 +80,72 @@ newtype Solver = Solver
   , log :: Maybe (String -> Effect Unit)
   }
 
+-- | The subprocess backend.
 newSolver :: SolverConfig -> Aff Solver
-newSolver cfg = do
-  solver <- liftEffect do
+newSolver cfg = newSolverWith
+  { start: \cbs -> liftEffect do
+      handle <- runEffectFn4 spawnImpl cfg.cmd cfg.args
+        (mkEffectFn1 cbs.onChunk)
+        (mkEffectFn1 cbs.onFailure)
+      pure
+        { send: \s -> runEffectFn2 writeImpl handle s
+        , close: do
+            runEffectFn2 writeImpl handle "(exit)\n"
+            runEffectFn1 killImpl handle
+        }
+  , log: cfg.log
+  }
+
+-- | Bring up a solver over any transport and put it in lockstep mode.
+newSolverWith
+  :: { start :: Callbacks -> Aff Transport
+     , log :: Maybe (String -> Effect Unit)
+     }
+  -> Aff Solver
+newSolverWith cfg = do
+  refs <- liftEffect do
     parse <- Ref.new SExpr.initialState
     ready <- Ref.new []
     waiter <- Ref.new Nothing
     dead <- Ref.new Nothing
-    let
-      failWith msg = do
-        d <- Ref.read dead
-        when (isNothing d) (Ref.write (Just msg) dead)
-        w <- Ref.read waiter
-        Ref.write Nothing waiter
-        for_ w \k -> k (Left (error msg))
+    pure { parse, ready, waiter, dead }
+  let
+    failWith msg = do
+      d <- Ref.read refs.dead
+      when (isNothing d) (Ref.write (Just msg) refs.dead)
+      w <- Ref.read refs.waiter
+      Ref.write Nothing refs.waiter
+      for_ w \k -> k (Left (error msg))
 
-      emit e = do
-        w <- Ref.read waiter
-        case w of
-          Just k -> do
-            Ref.write Nothing waiter
-            k (Right e)
-          Nothing -> Ref.modify_ (_ <> [ e ]) ready
+    emit e = do
+      w <- Ref.read refs.waiter
+      case w of
+        Just k -> do
+          Ref.write Nothing refs.waiter
+          k (Right e)
+        Nothing -> Ref.modify_ (_ <> [ e ]) refs.ready
 
-      onChunk chunk = do
-        for_ cfg.log \l -> l ("[recv] " <> chunk)
-        st <- Ref.read parse
-        case SExpr.feed st chunk of
-          Left err -> failWith ("response parse error: " <> err)
-          Right r -> do
-            Ref.write r.state parse
-            for_ r.exprs emit
+    onChunk chunk = do
+      for_ cfg.log \l -> l ("[recv] " <> chunk)
+      st <- Ref.read refs.parse
+      case SExpr.feed st chunk of
+        Left err -> failWith ("response parse error: " <> err)
+        Right r -> do
+          Ref.write r.state refs.parse
+          for_ r.exprs emit
 
-      onFailure msg = failWith ("solver process " <> cfg.cmd <> ": " <> msg)
+    onFailure msg = failWith ("solver backend: " <> msg)
 
-    handle <- runEffectFn4 spawnImpl cfg.cmd cfg.args (mkEffectFn1 onChunk) (mkEffectFn1 onFailure)
-    pure (Solver { handle, parse, ready, waiter, dead, log: cfg.log })
+  transport <- cfg.start { onChunk, onFailure }
+  let
+    solver = Solver
+      { transport
+      , parse: refs.parse
+      , ready: refs.ready
+      , waiter: refs.waiter
+      , dead: refs.dead
+      , log: cfg.log
+      }
   ackCommand solver (List [ Atom "set-option", Atom ":print-success", Atom "true" ])
   pure solver
 
@@ -107,7 +159,7 @@ command (Solver s) e = makeAff \k -> do
     Nothing -> do
       let line = SExpr.print e <> "\n"
       for_ s.log \l -> l ("[send] " <> line)
-      runEffectFn2 writeImpl s.handle line
+      s.transport.send line
       buffered <- Ref.read s.ready
       case Array.uncons buffered of
         Just { head, tail } -> do
@@ -133,5 +185,4 @@ stop (Solver s) = liftEffect do
   d <- Ref.read s.dead
   when (isNothing d) do
     Ref.write (Just "stopped") s.dead
-    runEffectFn2 writeImpl s.handle "(exit)\n"
-    runEffectFn1 killImpl s.handle
+    s.transport.close

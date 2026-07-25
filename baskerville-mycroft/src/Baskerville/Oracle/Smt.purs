@@ -97,10 +97,10 @@ countermodel (Session s) claim = inNewScope s.solver do
 -- | Claims the engine believes that the oracle refutes. Soundness
 -- | means this is empty, on every stream, at every position.
 unsound
-  :: forall res claim rule ax
+  :: forall residue claim rule axiom
    . Ord claim
   => Session claim
-  -> KB res claim rule ax
+  -> KB residue claim rule axiom
   -> Aff (Array claim)
 unsound session kb =
   Array.filterA (map not <<< entailed session)
@@ -109,10 +109,10 @@ unsound session kb =
 -- | Claims true in every world that the engine has not derived — the
 -- | completeness gap, now measurable where enumeration can't reach.
 gap
-  :: forall res claim rule ax
+  :: forall residue claim rule axiom
    . Ord claim
   => Session claim
-  -> KB res claim rule ax
+  -> KB residue claim rule axiom
   -> Aff (Array claim)
 gap session@(Session s) kb =
   Array.filterA
@@ -121,12 +121,12 @@ gap session@(Session s) kb =
 
 -- | The seam: ⊢ if the engine can, else what ⊨ has to say about it.
 explainOr
-  :: forall res claim rule ax
+  :: forall residue claim rule axiom
    . Ord claim
   => Session claim
-  -> KB res claim rule ax
+  -> KB residue claim rule axiom
   -> claim
-  -> Aff (Either (Refutation Model) (DerivationDag claim rule ax))
+  -> Aff (Either (Refutation Model) (DerivationDag claim rule axiom))
 explainOr session@(Session s) kb claim = case explain claim kb of
   Just dag -> pure (Right dag)
   Nothing

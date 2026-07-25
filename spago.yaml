@@ -3,8 +3,8 @@ workspace:
     registry: 77.13.1
   extraPackages:
     baskerville-core:
-      path: ../purescript-jtms/core
+      path: ../purescript-baskerville/core
     baskerville-testkit:
-      path: ../purescript-jtms/testkit
+      path: ../purescript-baskerville/testkit
     baskerville-sudoku:
-      path: ../purescript-jtms/examples/sudoku
+      path: ../purescript-baskerville/examples/sudoku
