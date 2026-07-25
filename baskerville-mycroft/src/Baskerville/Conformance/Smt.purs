@@ -2,11 +2,11 @@
 -- | world space is too large to enumerate. The founding restriction —
 -- | the claim universe stays finite — survives; only world *enumeration*
 -- | is replaced by the solver. So the instruments mirror
--- | `Baskerville.Testkit` one for one, each claim asked with one query
+-- | `Baskerville.Conformance` one for one, each claim asked with one query
 -- | inside a push/pop scope, plus one the counting oracle could never
 -- | offer: `whyEntailed`, the unsat core over the named observations —
 -- | the ⊨-side twin of ⊢'s `axiomsBehind`.
-module Baskerville.Oracle.Smt
+module Baskerville.Conformance.Smt
   ( SmtTheory
   , Session
   , newSession
@@ -23,7 +23,7 @@ import Prelude
 
 import Baskerville.Explain (DerivationDag, explain)
 import Baskerville.Kernel (KB, isKnown, knownClaims)
-import Baskerville.Testkit (Refutation(..))
+import Baskerville.Conformance (Refutation(..))
 import Control.Monad.Error.Class (throwError)
 import Data.Array as Array
 import Data.Either (Either(..))

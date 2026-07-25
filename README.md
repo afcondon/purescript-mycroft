@@ -34,10 +34,10 @@ bring him the facts and he pronounces.
   tears it down at the end.
 - **`baskerville-mycroft`** — the bridge to
   [Baskerville](../purescript-baskerville)'s oracle seam:
-  `Baskerville.Oracle.Smt`. In Baskerville domains the claim universe
+  `Baskerville.Conformance.Smt`. In Baskerville domains the claim universe
   stays finite even when the world space explodes; the solver replaces
   world *enumeration* while claim *iteration* survives. The
-  instruments mirror `Baskerville.Testkit` one for one — `entailed`,
+  instruments mirror `Baskerville.Conformance` one for one — `entailed`,
   `countermodel`, `unsound`, `gap`, `explainOr` — plus `whyEntailed`:
   the unsat core over the named observations, the ⊨-side twin of ⊢'s
   `axiomsBehind`.

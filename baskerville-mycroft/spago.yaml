@@ -15,7 +15,7 @@ package:
     - aff: ">=8.0.0 <9.0.0"
     - arrays: ">=7.3.0 <8.0.0"
     - baskerville-core: ">=0.1.0 <0.2.0"
-    - baskerville-testkit: ">=0.1.0 <0.2.0"
+    - baskerville-conformance: ">=0.1.0 <0.2.0"
     - either: ">=6.1.0 <7.0.0"
     - exceptions: ">=6.1.0 <7.0.0"
     - foldable-traversable: ">=6.0.0 <7.0.0"

@@ -9,7 +9,7 @@ module Test.Bridge.SudokuTheory
 
 import Prelude
 
-import Baskerville.Oracle.Smt (SmtTheory)
+import Baskerville.Conformance.Smt (SmtTheory)
 import Mycroft.SExpr (SExpr(..))
 import Mycroft.SmtLib (Term(..), andT, app, distinct, eqT, intLit, notT, var)
 import Sudoku.Board (Cell(..), Digit(..), Placement, allCells, allDigits, units)

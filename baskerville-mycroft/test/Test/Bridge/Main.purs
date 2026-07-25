@@ -7,9 +7,9 @@ module Test.Bridge.Main (main) where
 
 import Prelude
 
-import Baskerville.Oracle.Smt (Session, consistent, entailed, explainOr, gap, newSession, unsound, whyEntailed)
-import Baskerville.Testkit (Refutation(..))
-import Baskerville.Testkit as Testkit
+import Baskerville.Conformance.Smt (Session, consistent, entailed, explainOr, gap, newSession, unsound, whyEntailed)
+import Baskerville.Conformance (Refutation(..))
+import Baskerville.Conformance as Conformance
 import Data.Array as Array
 import Data.Either (Either(..))
 import Data.Maybe (Maybe(..), isJust)
@@ -59,7 +59,7 @@ chainBeats = withSession chainPuzzle \session kb -> do
   mismatches <- Array.filterA
     ( \c -> do
         smt <- entailed session c
-        pure (smt /= Testkit.entailed counting c)
+        pure (smt /= Conformance.entailed counting c)
     )
     theory.universe
   liftEffect (assertEqual { actual: mismatches, expected: [] })
@@ -69,7 +69,7 @@ chainBeats = withSession chainPuzzle \session kb -> do
   liftEffect
     ( assertEqual
         { actual: Array.sort smtGap
-        , expected: Array.sort (Testkit.gap counting kb)
+        , expected: Array.sort (Conformance.gap counting kb)
         }
     )
 
@@ -118,7 +118,7 @@ gapPuzzleBeats = withSession gapPuzzle \session kb -> do
   let enum = completions 2000 gapPuzzle
   liftEffect (assertTrue' "gap enumeration is exhaustive" enum.exhaustive)
   let counting = oracleFor enum.grids
-  case Array.head (Testkit.gap counting kb) of
+  case Array.head (Conformance.gap counting kb) of
     Nothing -> liftEffect (assertTrue' "gap puzzle has a gap" false)
     Just claim -> do
       r <- explainOr session kb claim

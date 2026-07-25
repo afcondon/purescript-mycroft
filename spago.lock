@@ -12,10 +12,10 @@
               "arrays": ">=7.3.0 <8.0.0"
             },
             {
-              "baskerville-core": ">=0.1.0 <0.2.0"
+              "baskerville-conformance": ">=0.1.0 <0.2.0"
             },
             {
-              "baskerville-testkit": ">=0.1.0 <0.2.0"
+              "baskerville-core": ">=0.1.0 <0.2.0"
             },
             {
               "either": ">=6.1.0 <7.0.0"
@@ -793,14 +793,14 @@
       }
     },
     "extra_packages": {
+      "baskerville-conformance": {
+        "path": "../purescript-baskerville/conformance"
+      },
       "baskerville-core": {
         "path": "../purescript-baskerville/core"
       },
       "baskerville-sudoku": {
         "path": "../purescript-baskerville/examples/sudoku"
-      },
-      "baskerville-testkit": {
-        "path": "../purescript-baskerville/testkit"
       }
     }
   },
@@ -878,6 +878,19 @@
         "prelude"
       ]
     },
+    "baskerville-conformance": {
+      "type": "local",
+      "path": "../purescript-baskerville/conformance",
+      "dependencies": [
+        "arrays",
+        "baskerville-core",
+        "either",
+        "foldable-traversable",
+        "maybe",
+        "ordered-collections",
+        "prelude"
+      ]
+    },
     "baskerville-core": {
       "type": "local",
       "path": "../purescript-baskerville/core",
@@ -887,8 +900,7 @@
         "foldable-traversable",
         "maybe",
         "ordered-collections",
-        "prelude",
-        "tuples"
+        "prelude"
       ]
     },
     "baskerville-sudoku": {
@@ -896,8 +908,8 @@
       "path": "../purescript-baskerville/examples/sudoku",
       "dependencies": [
         "arrays",
+        "baskerville-conformance",
         "baskerville-core",
-        "baskerville-testkit",
         "console",
         "effect",
         "foldable-traversable",
@@ -908,19 +920,6 @@
         "prelude",
         "strings",
         "tuples"
-      ]
-    },
-    "baskerville-testkit": {
-      "type": "local",
-      "path": "../purescript-baskerville/testkit",
-      "dependencies": [
-        "arrays",
-        "baskerville-core",
-        "either",
-        "foldable-traversable",
-        "maybe",
-        "ordered-collections",
-        "prelude"
       ]
     },
     "bifunctors": {
