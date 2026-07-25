@@ -791,7 +791,7 @@
     },
     "extra_packages": {
       "baskerville-core": {
-        "path": "../purescript-baskerville/core"
+        "path": "../purescript-baskerville"
       },
       "baskerville-sudoku": {
         "path": "../purescript-baskerville/examples/sudoku"
@@ -874,7 +874,7 @@
     },
     "baskerville-core": {
       "type": "local",
-      "path": "../purescript-baskerville/core",
+      "path": "../purescript-baskerville",
       "dependencies": [
         "arrays",
         "control",
