@@ -51,7 +51,7 @@
         }
       },
       "mycroft": {
-        "path": "mycroft",
+        "path": "./",
         "core": {
           "dependencies": [
             {
