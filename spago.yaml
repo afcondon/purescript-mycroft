@@ -4,7 +4,5 @@ workspace:
   extraPackages:
     baskerville-core:
       path: ../purescript-baskerville/core
-    baskerville-conformance:
-      path: ../purescript-baskerville/conformance
     baskerville-sudoku:
       path: ../purescript-baskerville/examples/sudoku

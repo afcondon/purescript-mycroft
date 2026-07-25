@@ -12,9 +12,6 @@
               "arrays": ">=7.3.0 <8.0.0"
             },
             {
-              "baskerville-conformance": ">=0.1.0 <0.2.0"
-            },
-            {
               "baskerville-core": ">=0.1.0 <0.2.0"
             },
             {
@@ -793,9 +790,6 @@
       }
     },
     "extra_packages": {
-      "baskerville-conformance": {
-        "path": "../purescript-baskerville/conformance"
-      },
       "baskerville-core": {
         "path": "../purescript-baskerville/core"
       },
@@ -878,25 +872,13 @@
         "prelude"
       ]
     },
-    "baskerville-conformance": {
-      "type": "local",
-      "path": "../purescript-baskerville/conformance",
-      "dependencies": [
-        "arrays",
-        "baskerville-core",
-        "either",
-        "foldable-traversable",
-        "maybe",
-        "ordered-collections",
-        "prelude"
-      ]
-    },
     "baskerville-core": {
       "type": "local",
       "path": "../purescript-baskerville/core",
       "dependencies": [
         "arrays",
         "control",
+        "either",
         "foldable-traversable",
         "maybe",
         "ordered-collections",
@@ -908,7 +890,6 @@
       "path": "../purescript-baskerville/examples/sudoku",
       "dependencies": [
         "arrays",
-        "baskerville-conformance",
         "baskerville-core",
         "console",
         "effect",
